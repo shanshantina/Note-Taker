@@ -4,7 +4,7 @@
   
 
   ## Description
-  This is a note taker which user can use it to write and save notes. This application is created by Express.js. <br/><br/>[Note Taker]() <br/><br/>![Note Taker](./assets/images/html-sample-1) <br/><br/>![Note Taker](./assets/images/html-sample-2)
+  This is a note taker which user can use it to write and save notes. This application is created by Express.js. <br/><br/>[Note Taker]() <br/><br/>![Note Taker](./assets/images/html-sample-1.JPG) <br/><br/>![Note Taker](./assets/images/html-sample-2.JPG)
 
   ## Table of Contents
   * [Installation](#installation)
