@@ -29,12 +29,12 @@ router.post("/notes", function(req, res) {
 
         for(let i=0; i<notes.length; i++) {
             // create a new notes and push it to new list array
-            const newNotes = {
+            const newNote = {
                 title: notes[i].title,
                 text: notes[i].text,
                 id: i
             };
-            dbNewList.push(newNotes);
+            dbNewList.push(newNote);
         }
         // convert the file to JSON form and add to the json list
         fs.writeFile(path.join(__dirname, "../db/db.json"), JSON.stringify(dbNewList, null, 2), (err) => {
@@ -61,12 +61,12 @@ router.delete("/notes/:id", function(req, res) {
         for(let i=0; i<notes.length; i++) {
             // if the array number is not match with id number, refresh the id and add to the list
             if(i !==id) {
-                const newNotes = {
+                const newNote = {
                     title: notes[i].title,
                     text: notes[i].text,
-                    id: i
+                    id: dbNewList.length
                 };
-                dbNewList.push(newNotes);
+                dbNewList.push(newNote);
             }
         }
         // convert the file to JSON form and refresh the list after delete the note
