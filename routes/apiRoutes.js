@@ -18,19 +18,19 @@ router.post("/notes", function(req, res) {
             return console.log(err);
         }
         const notes = JSON.parse(data);
-        const addToDb = [];
+        const dbNewList = [];
 
         notes.push(req.body);
 
         for(let i=0; i<notes.length; i++) {
-            const addedNotes = {
+            const newNotes = {
                 title: notes[i].title,
                 text: notes[i].text,
                 id: i
             };
-            addToDb.push(addedNotes);
+            dbNewList.push(newNotes);
         }
-        fs.writeFile(path.join(__dirname, "../db/db.json"), JSON.stringify(addToDb, null, 2), (err) => {
+        fs.writeFile(path.join(__dirname, "../db/db.json"), JSON.stringify(dbNewList, null, 2), (err) => {
             if (err) {
                 return console.log(err);
             }
@@ -47,19 +47,19 @@ router.delete("/notes/:id", function(req, res) {
             return console.log(err);
         }
         const notes = JSON.parse(data);
-        const addToDb = [];
+        const dbNewList = [];
 
         for(let i=0; i<notes.length; i++) {
             if(i !==id) {
-                const addedNotes = {
+                const newNotes = {
                     title: notes[i].title,
                     text: notes[i].text,
                     id: i
                 };
-                addToDb.push(addedNotes);
+                dbNewList.push(newNotes);
             }
         }
-        fs.writeFile(path.join(__dirname, "../db/db.json"), JSON.stringify(addToDb, null, 2), (err) => {
+        fs.writeFile(path.join(__dirname, "../db/db.json"), JSON.stringify(dbNewList, null, 2), (err) => {
             if (err) {
                 return console.log(err);
             }
@@ -71,4 +71,3 @@ router.delete("/notes/:id", function(req, res) {
 });
 
 module.exports  = router;
-
