@@ -1,51 +1,73 @@
 const fs = require('fs');
-var util = require('util');
 const path = require("path");
 const router = require('express').Router();
 
-const writeFileAsync = util.promisify(fs.writeFile);
-const readFileAsync = util.promisify(fs.readFile);
-let notes;
 
 router.get("/notes", function(req, res) {
-    readFileAsync(path.join(__dirname, "../db/db.json"), "utf8")
-    .then (function(data) {
-        return res.json(JSON.parse(data));
+    fs.readFile(path.join(__dirname, "../db/db.json"), "utf8", function(err, data) {
+        if (err) {
+            return console.log(err);
+        }
+        res.json(JSON.parse(data));
     });
 });
 
 router.post("/notes", function(req, res) {
-    let newNote = req.body;
-    readFileAsync(path.join(__dirname, "../db/db.json"), "utf8")
-    .then(function(data) {
-        notes = JSON.parse(data);
-        if (newNote.id || newNote.id === 0) {
-            let currentNote = notes[newNote.id];
-            currentNote.title = newNote.title;
-            currentNote.text = newNote.text;
-        } else {
-            notes.push(newNote);
+    fs.readFile(path.join(__dirname, "../db/db.json"), "utf8", function(err, data) {
+        if (err) {
+            return console.log(err);
         }
-        writeFileAsync(path.join(__dirname, "../db/db.json"), JSON.stringify(notes))
-        .then(function() {
-            console.log("add the note to json file");
-        }); 
-    });
-    res.json(newNote); 
+        const notes = JSON.parse(data);
+        const addToDb = [];
+
+        notes.push(req.body);
+
+        for(let i=0; i<notes.length; i++) {
+            const addedNotes = {
+                title: notes[i].title,
+                text: notes[i].text,
+                id: i
+            };
+            addToDb.push(addedNotes);
+        }
+        fs.writeFile(path.join(__dirname, "../db/db.json"), JSON.stringify(addToDb, null, 2), (err) => {
+            if (err) {
+                return console.log(err);
+            }
+            console.log("New notes is added to db.json file.");
+            res.json(req.body);
+        });
+    })
 });
 
 router.delete("/notes/:id", function(req, res) {
-    let id = req.params.id;
-    readFileAsync(path.join(__dirname, "../db/db.json"), "utf8")
-    .then(function(data) {
-        notes = JSON.parse(data);
-        notes.splice(id, 1);
-        writeFileAsync(path.join(__dirname, "../db/db.json"),JSON.stringify(notes))
-        .then(function() {
-            console.log("deleted the note from json file");
+    const id = parseInt(req.params.id);
+    fs.readFile(path.join(__dirname, "../db/db.json"), "utf8", function(err, data) {
+        if (err) {
+            return console.log(err);
+        }
+        const notes = JSON.parse(data);
+        const addToDb = [];
+
+        for(let i=0; i<notes.length; i++) {
+            if(i !==id) {
+                const addedNotes = {
+                    title: notes[i].title,
+                    text: notes[i].text,
+                    id: i
+                };
+                addToDb.push(addedNotes);
+            }
+        }
+        fs.writeFile(path.join(__dirname, "../db/db.json"), JSON.stringify(addToDb, null, 2), (err) => {
+            if (err) {
+                return console.log(err);
+            }
+            console.log("The note is removed to db.json file.");
+            res.json(req.body);
         });
-    });
-    res.json(id);
+    })
+        
 });
 
 module.exports  = router;
